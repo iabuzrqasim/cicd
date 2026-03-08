@@ -23,3 +23,16 @@ jobs:
 
     - name: Run Application
       run: java -cp target/java-cicd-1.0.jar App
+
+    - name: Create deployment package
+      run: zip -r deploy.zip Procfile target/java-cicd-1.0.jar
+
+    - name: Deploy to AWS Elastic Beanstalk
+      uses: einaregilsson/beanstalk-deploy@v1
+      with:
+        application_name: cicd
+        environment_name: cicd-env
+        region: us-east-1
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        deployment_package: deploy.zip
